@@ -2,9 +2,14 @@ import { useState } from "react";
 import { Search, ShoppingCart, User, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NavLink } from "@/components/NavLink";
+import { useCart } from "@/contexts/CartContext";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { getCartCount } = useCart();
+  const navigate = useNavigate();
+  const cartCount = getCartCount();
 
   return (
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-sm border-b border-border shadow-sm">
@@ -72,11 +77,18 @@ const Navbar = () => {
             <Button variant="ghost" size="icon" className="hover:text-primary">
               <User className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="hover:text-primary relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hover:text-primary relative"
+              onClick={() => navigate("/cart")}
+            >
               <ShoppingCart className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                0
-              </span>
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
+                  {cartCount > 9 ? "9+" : cartCount}
+                </span>
+              )}
             </Button>
 
             {/* Mobile Menu Button */}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getProductById, getSimilarProducts } from "@/data/products";
+import { useCart } from "@/contexts/CartContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductImageCarousel from "@/components/ProductImageCarousel";
@@ -14,10 +15,21 @@ import { toast } from "sonner";
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
 
   const product = id ? getProductById(id) : undefined;
   const similarProducts = product ? getSimilarProducts(product.id, product.category) : [];
+
+  // Initialize selections when product loads
+  if (product && !selectedSize) {
+    setSelectedSize(product.sizes[0]);
+  }
+  if (product && !selectedColor) {
+    setSelectedColor(product.colors[0].name);
+  }
 
   if (!product) {
     return (
@@ -38,8 +50,17 @@ const ProductDetail = () => {
   }
 
   const handleAddToCart = () => {
+    if (!selectedSize || !selectedColor) {
+      toast.error("Please select size and color");
+      return;
+    }
+    addToCart(product, quantity, selectedSize, selectedColor);
     toast.success(`Added ${product.name} to cart!`, {
-      description: `Quantity: ${quantity}`,
+      description: `Size: ${selectedSize}, Color: ${selectedColor}, Quantity: ${quantity}`,
+      action: {
+        label: "View Cart",
+        onClick: () => navigate("/cart"),
+      },
     });
   };
 
@@ -123,7 +144,14 @@ const ProductDetail = () => {
             </div>
 
             {/* Size & Color Selection */}
-            <SizeColorSelector sizes={product.sizes} colors={product.colors} />
+            <SizeColorSelector
+              sizes={product.sizes}
+              colors={product.colors}
+              onSelectionChange={(size, color) => {
+                setSelectedSize(size);
+                setSelectedColor(color);
+              }}
+            />
 
             {/* Quantity */}
             <div>
