@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 import kurtiImage from "@/assets/kurti-pink.jpg";
 import sareeImage from "@/assets/saree-cream.jpg";
 import kurtiSetImage from "@/assets/kurti-set-purple.jpg";
@@ -9,25 +10,30 @@ const categories = [
     name: "Kurtis",
     image: kurtiImage,
     description: "Elegant everyday wear",
+    productId: "1",
   },
   {
     name: "Sarees",
     image: sareeImage,
     description: "Traditional elegance",
+    productId: "2",
   },
   {
     name: "Kurti Sets",
     image: kurtiSetImage,
     description: "Complete ensembles",
+    productId: "3",
   },
   {
     name: "Dresses",
     image: dressImage,
     description: "Modern ethnic fusion",
+    productId: "4",
   },
 ];
 
 const Categories = () => {
+  const navigate = useNavigate();
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
@@ -45,6 +51,7 @@ const Categories = () => {
             <Card
               key={index}
               className="group overflow-hidden border-none shadow-lg hover-lift cursor-pointer"
+              onClick={() => navigate(`/product/${category.productId}`)}
             >
               <CardContent className="p-0">
                 <div className="relative aspect-[3/4] overflow-hidden">
