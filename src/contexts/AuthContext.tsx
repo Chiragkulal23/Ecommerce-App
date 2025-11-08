@@ -111,10 +111,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
+      console.log("AuthContext: signIn called", { email });
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+
+      console.log("AuthContext: signIn result", { hasError: !!error, error });
 
       if (error) {
         toast({
@@ -126,6 +129,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       return { error };
     } catch (error: any) {
+      console.error("AuthContext: signIn exception", error);
       toast({
         title: "Error",
         description: error.message,

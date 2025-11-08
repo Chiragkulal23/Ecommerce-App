@@ -28,11 +28,13 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Login form submitted", { email, hasPassword: !!password });
     setErrors({});
 
     const result = loginSchema.safeParse({ email, password });
     
     if (!result.success) {
+      console.log("Validation failed", result.error.errors);
       const fieldErrors: { email?: string; password?: string } = {};
       result.error.errors.forEach((error) => {
         if (error.path[0]) {
@@ -43,12 +45,16 @@ const Login = () => {
       return;
     }
 
+    console.log("Calling signIn function");
     const { error } = await signIn(email, password);
+    
+    console.log("SignIn result:", { hasError: !!error, error });
     
     if (!error) {
       if (rememberMe) {
         localStorage.setItem("rememberMe", "true");
       }
+      console.log("Login successful, navigating to home");
       navigate("/");
     }
   };

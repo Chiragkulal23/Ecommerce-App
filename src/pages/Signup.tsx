@@ -33,6 +33,7 @@ const Signup = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Signup form submitted", { fullName, email, hasPassword: !!password });
     setErrors({});
 
     const result = signupSchema.safeParse({
@@ -43,6 +44,7 @@ const Signup = () => {
     });
 
     if (!result.success) {
+      console.log("Signup validation failed", result.error.errors);
       const fieldErrors: Record<string, string> = {};
       result.error.errors.forEach((error) => {
         if (error.path[0]) {
@@ -53,9 +55,13 @@ const Signup = () => {
       return;
     }
 
+    console.log("Calling signUp function");
     const { error } = await signUp(email, password, fullName);
     
+    console.log("SignUp result:", { hasError: !!error, error });
+    
     if (!error) {
+      console.log("Signup successful, navigating to login");
       navigate("/login");
     }
   };
