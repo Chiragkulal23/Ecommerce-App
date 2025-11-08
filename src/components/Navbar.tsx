@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { Search, ShoppingCart, User, Menu, X } from "lucide-react";
+import { Search, ShoppingCart, User, Menu, X, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NavLink } from "@/components/NavLink";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { getCartCount } = useCart();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const cartCount = getCartCount();
 
@@ -74,9 +76,29 @@ const Navbar = () => {
             <Button variant="ghost" size="icon" className="hover:text-primary">
               <Search className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="hover:text-primary">
-              <User className="h-5 w-5" />
-            </Button>
+            
+            {user ? (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hover:text-primary"
+                onClick={signOut}
+                title="Logout"
+              >
+                <LogOut className="h-5 w-5" />
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hover:text-primary"
+                onClick={() => navigate("/login")}
+                title="Login"
+              >
+                <User className="h-5 w-5" />
+              </Button>
+            )}
+            
             <Button
               variant="ghost"
               size="icon"
