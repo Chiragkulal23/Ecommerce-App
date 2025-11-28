@@ -9,8 +9,12 @@ import Index from "./pages/Index";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import OrderSuccess from "./pages/OrderSuccess";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import UserProfile from "./pages/UserProfile";
+import Products from "./pages/Products";
+import Categories from "./pages/Categories";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AboutUs from "./pages/AboutUs";
@@ -32,8 +36,13 @@ const App = () => (
               <Route path="/product/:id" element={<ProductDetail />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/order-success" element={<OrderSuccess />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/profile" element={<UserProfile />} />
+              <Route path="/shop" element={<Products />} />
+              <Route path="/categories" element={<Categories />} />
+              <Route path="/products" element={<Products />} />
               <Route path="/about" element={<AboutUs />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/admin/login" element={<AdminLogin />} />
@@ -49,3 +58,4 @@ const App = () => (
 );
 
 export default App;
+

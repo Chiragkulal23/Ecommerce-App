@@ -4,7 +4,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { z } from "zod";
 
 const loginSchema = z.object({
@@ -15,9 +14,8 @@ const loginSchema = z.object({
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const { signIn, user } = useAuth();
+  const [errors, setErrors] = useState<{ email?: string; password?: string; form?: string }>({});
+  const { login, user, error } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,13 +26,11 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login form submitted", { email, hasPassword: !!password });
     setErrors({});
 
     const result = loginSchema.safeParse({ email, password });
     
     if (!result.success) {
-      console.log("Validation failed", result.error.errors);
       const fieldErrors: { email?: string; password?: string } = {};
       result.error.errors.forEach((error) => {
         if (error.path[0]) {
@@ -45,18 +41,8 @@ const Login = () => {
       return;
     }
 
-    console.log("Calling signIn function");
-    const { error } = await signIn(email, password);
-    
-    console.log("SignIn result:", { hasError: !!error, error });
-    
-    if (!error) {
-      if (rememberMe) {
-        localStorage.setItem("rememberMe", "true");
-      }
-      console.log("Login successful, navigating to home");
-      navigate("/");
-    }
+    await login(email, password);
+    navigate("/");
   };
 
   return (
@@ -69,6 +55,9 @@ const Login = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <p className="text-sm text-destructive text-center">{error}</p>
+            )}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -97,25 +86,6 @@ const Login = () => {
               {errors.password && (
                 <p className="text-sm text-destructive">{errors.password}</p>
               )}
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="remember"
-                  checked={rememberMe}
-                  onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                />
-                <Label htmlFor="remember" className="text-sm font-normal cursor-pointer">
-                  Remember me
-                </Label>
-              </div>
-              <Link
-                to="/forgot-password"
-                className="text-sm text-primary hover:underline"
-              >
-                Forgot password?
-              </Link>
             </div>
 
             <Button type="submit" className="w-full" size="lg">

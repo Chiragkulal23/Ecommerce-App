@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { getCartCount } = useCart();
-  const { user, signOut } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const cartCount = getCartCount();
 
@@ -49,12 +49,19 @@ const Navbar = () => {
               Shop
             </NavLink>
             <NavLink
-              to="/categories"
-              className="text-foreground hover:text-primary smooth-transition"
-              activeClassName="text-primary font-medium"
-            >
-              Categories
-            </NavLink>
+                to="/categories"
+                className="text-foreground hover:text-primary smooth-transition"
+                activeClassName="text-primary font-medium"
+              >
+                Categories
+              </NavLink>
+              <NavLink
+                to="/products"
+                className="text-foreground hover:text-primary smooth-transition"
+                activeClassName="text-primary font-medium"
+              >
+                Products
+              </NavLink>
             <NavLink
               to="/about"
               className="text-foreground hover:text-primary smooth-transition"
@@ -78,15 +85,26 @@ const Navbar = () => {
             </Button>
             
             {user ? (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hover:text-primary"
-                onClick={signOut}
-                title="Logout"
-              >
-                <LogOut className="h-5 w-5" />
-              </Button>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:text-primary"
+                  onClick={() => navigate("/profile")}
+                  title="Profile"
+                >
+                  <User className="h-5 w-5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:text-primary"
+                  onClick={logout}
+                  title="Logout"
+                >
+                  <LogOut className="h-5 w-5" />
+                </Button>
+              </div>
             ) : (
               <Button
                 variant="ghost"
@@ -151,6 +169,13 @@ const Navbar = () => {
                 Categories
               </NavLink>
               <NavLink
+                to="/products"
+                className="text-foreground hover:text-primary smooth-transition py-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Products
+              </NavLink>
+              <NavLink
                 to="/about"
                 className="text-foreground hover:text-primary smooth-transition py-2"
                 onClick={() => setIsMenuOpen(false)}
@@ -164,6 +189,15 @@ const Navbar = () => {
               >
                 Contact
               </NavLink>
+              {user && (
+                <NavLink
+                  to="/profile"
+                  className="text-foreground hover:text-primary smooth-transition py-2"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  My Profile
+                </NavLink>
+              )}
             </div>
           </div>
         )}

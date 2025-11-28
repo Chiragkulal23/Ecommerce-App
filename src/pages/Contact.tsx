@@ -36,18 +36,8 @@ const Contact = () => {
       
       setIsSubmitting(true);
       
-      // Call edge function to send email
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-contact-email`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(validatedData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to send message');
-      }
+      // TODO: Implement API call to send email
+      console.log(validatedData);
 
       toast({
         title: "Message Sent!",

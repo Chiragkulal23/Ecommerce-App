@@ -7,7 +7,6 @@ import { Label } from "@/components/ui/label";
 import { z } from "zod";
 
 const signupSchema = z.object({
-  fullName: z.string().min(2, "Name must be at least 2 characters").max(100),
   email: z.string().email("Invalid email address").max(255),
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string(),
@@ -17,12 +16,11 @@ const signupSchema = z.object({
 });
 
 const Signup = () => {
-  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { signUp, user } = useAuth();
+  const { signup, user, error } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,18 +31,15 @@ const Signup = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Signup form submitted", { fullName, email, hasPassword: !!password });
     setErrors({});
 
     const result = signupSchema.safeParse({
-      fullName,
       email,
       password,
       confirmPassword,
     });
 
     if (!result.success) {
-      console.log("Signup validation failed", result.error.errors);
       const fieldErrors: Record<string, string> = {};
       result.error.errors.forEach((error) => {
         if (error.path[0]) {
@@ -55,15 +50,8 @@ const Signup = () => {
       return;
     }
 
-    console.log("Calling signUp function");
-    const { error } = await signUp(email, password, fullName);
-    
-    console.log("SignUp result:", { hasError: !!error, error });
-    
-    if (!error) {
-      console.log("Signup successful, navigating to login");
-      navigate("/login");
-    }
+    await signup(email, password);
+    navigate("/login");
   };
 
   return (
@@ -76,21 +64,9 @@ const Signup = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="fullName">Full Name</Label>
-              <Input
-                id="fullName"
-                type="text"
-                placeholder="Jane Doe"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className={errors.fullName ? "border-destructive" : ""}
-              />
-              {errors.fullName && (
-                <p className="text-sm text-destructive">{errors.fullName}</p>
-              )}
-            </div>
-
+            {error && (
+              <p className="text-sm text-destructive text-center">{error}</p>
+            )}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input

@@ -16,16 +16,16 @@ const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const { signIn, user, isAdmin } = useAuth();
+  const { user, login } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user && isAdmin) {
+    if (user && user.role === 'admin') {
       navigate("/admin/dashboard");
-    } else if (user && !isAdmin) {
+    } else if (user && user.role !== 'admin') {
       navigate("/");
     }
-  }, [user, isAdmin, navigate]);
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,10 +44,11 @@ const AdminLogin = () => {
       return;
     }
 
-    const { error } = await signIn(email, password);
-    
-    if (!error) {
+    try {
+      await login(email, password);
       // The useEffect will handle navigation based on admin status
+    } catch (error) {
+      console.error('Login failed:', error);
     }
   };
 

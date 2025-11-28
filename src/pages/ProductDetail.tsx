@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getProductById, getSimilarProducts } from "@/data/products";
+import { useProduct, useProducts } from "@/hooks/useProducts";
 import { useCart } from "@/contexts/CartContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -20,15 +20,31 @@ const ProductDetail = () => {
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
 
-  const product = id ? getProductById(id) : undefined;
-  const similarProducts = product ? getSimilarProducts(product.id, product.category) : [];
+  const { data: product, isLoading } = useProduct(id || "");
+  const { data: allProducts = [] } = useProducts();
 
-  // Initialize selections when product loads
-  if (product && !selectedSize) {
-    setSelectedSize(product.sizes[0]);
-  }
-  if (product && !selectedColor) {
-    setSelectedColor(product.colors[0].name);
+  const similarProducts = product
+    ? allProducts
+      .filter(p => p.id !== product.id && p.category === product.category)
+      .slice(0, 4)
+    : [];
+
+  useEffect(() => {
+    if (!product) return;
+    if (!selectedSize) {
+      setSelectedSize(product.sizes && product.sizes.length > 0 ? product.sizes[0] : "Free Size");
+    }
+    if (!selectedColor) {
+      setSelectedColor(product.colors && product.colors.length > 0 ? product.colors[0].name : "Default");
+    }
+  }, [product, selectedSize, selectedColor]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
   }
 
   if (!product) {
@@ -50,13 +66,11 @@ const ProductDetail = () => {
   }
 
   const handleAddToCart = () => {
-    if (!selectedSize || !selectedColor) {
-      toast.error("Please select size and color");
-      return;
-    }
+    const size = selectedSize || "Free Size";
+    const color = selectedColor || "Default";
     addToCart(product, quantity, selectedSize, selectedColor);
     toast.success(`Added ${product.name} to cart!`, {
-      description: `Size: ${selectedSize}, Color: ${selectedColor}, Quantity: ${quantity}`,
+      description: `Size: ${size}, Color: ${color}, Quantity: ${quantity}`,
       action: {
         label: "View Cart",
         onClick: () => navigate("/cart"),
@@ -72,9 +86,8 @@ const ProductDetail = () => {
     return Array.from({ length: 5 }, (_, index) => (
       <Star
         key={index}
-        className={`h-5 w-5 ${
-          index < rating ? "fill-accent text-accent" : "text-muted"
-        }`}
+        className={`h-5 w-5 ${index < rating ? "fill-accent text-accent" : "text-muted"
+          }`}
       />
     ));
   };
@@ -110,7 +123,7 @@ const ProductDetail = () => {
                 {product.category}
               </span>
               <h1 className="text-4xl font-playfair font-bold mb-4">{product.name}</h1>
-              
+
               {/* Rating */}
               <div className="flex items-center gap-3 mb-6">
                 <div className="flex gap-1">{renderStars(Math.round(product.rating))}</div>

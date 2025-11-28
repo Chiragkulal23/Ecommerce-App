@@ -1,5 +1,5 @@
 import { Star, CheckCircle } from "lucide-react";
-import { Review } from "@/data/products";
+import { Review } from "@/types/product";
 import { Card, CardContent } from "@/components/ui/card";
 
 interface ProductReviewsProps {
@@ -12,9 +12,8 @@ const ProductReviews = ({ reviews, rating }: ProductReviewsProps) => {
     return Array.from({ length: 5 }, (_, index) => (
       <Star
         key={index}
-        className={`h-4 w-4 ${
-          index < rating ? "fill-accent text-accent" : "text-muted"
-        }`}
+        className={`h-4 w-4 ${index < rating ? "fill-accent text-accent" : "text-muted"
+          }`}
       />
     ));
   };

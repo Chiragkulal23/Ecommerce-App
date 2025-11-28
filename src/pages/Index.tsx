@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import Categories from "@/components/Categories";
+import Categories from "@/pages/Categories";
 import ProductsGrid from "@/components/ProductsGrid";
 import PromoSection from "@/components/PromoSection";
 import WhyChooseUs from "@/components/WhyChooseUs";
@@ -25,3 +25,4 @@ const Index = () => {
 };
 
 export default Index;
+

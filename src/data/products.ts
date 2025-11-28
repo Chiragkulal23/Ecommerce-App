@@ -168,6 +168,20 @@ export const products: Product[] = [
       "Machine washable",
     ],
   },
+  {
+    id: "demo-1",
+    name: "Demo Test Dress",
+    price: 1,
+    originalPrice: 100,
+    description: "This is a demo product for testing payment functionality. It costs only ₹1.",
+    category: "Dresses",
+    images: [dressYellow], // Reusing an existing image
+    sizes: ["Free Size"],
+    colors: [{ name: "Demo Color", value: "#000000" }],
+    rating: 5,
+    reviews: [],
+    features: ["Test Product", "Price ₹1"],
+  },
 ];
 
 export const getProductById = (id: string): Product | undefined => {

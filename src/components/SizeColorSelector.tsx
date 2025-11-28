@@ -7,8 +7,10 @@ interface SizeColorSelectorProps {
 }
 
 const SizeColorSelector = ({ sizes, colors, onSelectionChange }: SizeColorSelectorProps) => {
-  const [selectedSize, setSelectedSize] = useState(sizes[0]);
-  const [selectedColor, setSelectedColor] = useState(colors[0].name);
+  const initialSize = sizes && sizes.length > 0 ? sizes[0] : "Free Size";
+  const initialColor = colors && colors.length > 0 ? colors[0].name : "Default";
+  const [selectedSize, setSelectedSize] = useState(initialSize);
+  const [selectedColor, setSelectedColor] = useState(initialColor);
 
   const handleSizeChange = (size: string) => {
     setSelectedSize(size);
@@ -28,7 +30,7 @@ const SizeColorSelector = ({ sizes, colors, onSelectionChange }: SizeColorSelect
           Select Size: <span className="text-primary">{selectedSize}</span>
         </label>
         <div className="flex flex-wrap gap-3">
-          {sizes.map((size) => (
+          {(sizes && sizes.length > 0 ? sizes : [initialSize]).map((size) => (
             <button
               key={size}
               onClick={() => handleSizeChange(size)}
@@ -50,7 +52,7 @@ const SizeColorSelector = ({ sizes, colors, onSelectionChange }: SizeColorSelect
           Select Color: <span className="text-primary">{selectedColor}</span>
         </label>
         <div className="flex flex-wrap gap-3">
-          {colors.map((color) => (
+          {(colors && colors.length > 0 ? colors : [{ name: initialColor, value: "#9ca3af" }]).map((color) => (
             <button
               key={color.name}
               onClick={() => handleColorChange(color.name)}

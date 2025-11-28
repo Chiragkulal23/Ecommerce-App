@@ -1,4 +1,4 @@
-import { Product } from "@/data/products";
+import { Product } from "@/types/product";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Star, ShoppingCart } from "lucide-react";

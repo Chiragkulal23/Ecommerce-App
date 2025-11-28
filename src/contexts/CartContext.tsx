@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from "react";
-import { Product } from "@/data/products";
+import { Product } from "@/types/product";
 
 export interface CartItem {
   product: Product;
@@ -35,8 +35,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       if (existingItem) {
         return prevItems.map((item) =>
           item.product.id === product.id &&
-          item.selectedSize === size &&
-          item.selectedColor === color
+            item.selectedSize === size &&
+            item.selectedColor === color
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
@@ -68,8 +68,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setItems((prevItems) =>
       prevItems.map((item) =>
         item.product.id === productId &&
-        item.selectedSize === size &&
-        item.selectedColor === color
+          item.selectedSize === size &&
+          item.selectedColor === color
           ? { ...item, quantity }
           : item
       )

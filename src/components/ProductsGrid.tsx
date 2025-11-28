@@ -1,50 +1,11 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/hooks/use-toast";
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  category: string;
-  image_url: string;
-}
+import { useProducts } from "@/hooks/useProducts";
 
 const ProductsGrid = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: products = [], isLoading: loading } = useProducts();
   const navigate = useNavigate();
-  const { toast } = useToast();
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(8);
-
-      if (error) throw error;
-      
-      setProducts(data || []);
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: "Failed to load products",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -99,7 +60,7 @@ const ProductsGrid = () => {
             >
               <div className="relative overflow-hidden aspect-[3/4]">
                 <img
-                  src={product.image_url}
+                  src={product.images[0]}
                   alt={product.name}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
@@ -113,7 +74,7 @@ const ProductsGrid = () => {
                   {product.category}
                 </p>
                 <p className="text-lg font-bold text-primary">
-                  ${product.price.toFixed(2)}
+                  ₹{product.price.toLocaleString()}
                 </p>
               </CardContent>
             </Card>
